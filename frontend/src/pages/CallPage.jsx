@@ -91,12 +91,20 @@ const CallPage = () => {
 const CallContent = ({ navigate }) => {
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
+  const { authUser } = useUserAuth();
+  const { id: callId } = useParams();
 
   useEffect(() => {
     if (callingState === CallingState.LEFT) {
-      navigate("/");
+      if (callId && authUser?._id) {
+        const [id1, id2] = callId.split("-");
+        const otherUserId = id1 === authUser._id ? id2 : id1;
+        navigate(`/chat/${otherUserId}`);
+      } else {
+        navigate("/");
+      }
     }
-  }, [callingState, navigate]);
+  }, [callingState, navigate, callId, authUser]);
 
   return (
     <StreamTheme>
@@ -105,5 +113,6 @@ const CallContent = ({ navigate }) => {
     </StreamTheme>
   );
 };
+
 
 export default CallPage;
