@@ -90,13 +90,16 @@ return (
       >
         <ArrowLeft className="w-5 h-5 text-white" />
       </Link>
-      <CallBtn handleVideoCall={handleVideoCall} />
+    
     </div>
 
     <Chat client={chatClient} theme="messaging light">
       <Channel channel={channel}>
-        <div className="w-full">
+        
+        <div className="w-full relative">
+           <CallBtn handleVideoCall={handleVideoCall} />
           <Window>
+            
             <ChannelHeader />
             <MessageList />
             <MessageInput focus />
