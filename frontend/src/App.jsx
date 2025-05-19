@@ -18,7 +18,6 @@ import OnBoardingPage from "./pages/OnBoardingPage.jsx";
 import Layout from "./components/Layout.jsx";
 import { useThemeStore } from "./store/useThemeStore.js";
 import FriendPage from "./pages/FriendPage.jsx";
-import ProfileView from "./components/ProfileView.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useUserAuth();
@@ -145,7 +144,7 @@ const App = () => {
               )
             }
           />
-          <Route path="/profile" element={<ProfileView />} />
+         
         </Routes>
       </Router>
       <Toaster />

@@ -1,8 +1,17 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { acceptFriendRequest, getFriendRequests } from "../lib/api";
+import {
+  acceptFriendRequest,
+  getFriendRequests,
+  rejectFriendRequest,
+} from "../lib/api";
 import { useMutation } from "@tanstack/react-query";
-import { BellIcon, ClockIcon, MessageSquareIcon, UserCheckIcon } from "lucide-react";
+import {
+  BellIcon,
+  ClockIcon,
+  MessageSquareIcon,
+  UserCheckIcon,
+} from "lucide-react";
 import NoNotificationsFound from "../components/NoNotificationsFound";
 
 const NotificationsPage = () => {
@@ -17,6 +26,15 @@ const NotificationsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+    },
+  });
+
+  const { mutate: rejectRequestMutation } = useMutation({
+    mutationFn: rejectFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+    
     },
   });
 
@@ -40,7 +58,9 @@ const NotificationsPage = () => {
                 <h2 className="text-xl font-semibold flex items-center gap-2">
                   <UserCheckIcon className="h-5 w-5 text-primary" />
                   Friend Requests
-                  <span className="badge badge-primary ml-2">{incomingRequests.length}</span>
+                  <span className="badge badge-primary ml-2">
+                    {incomingRequests.length}
+                  </span>
                 </h2>
                 <div className="space-y-3">
                   {incomingRequests.map((request) => (
@@ -58,7 +78,9 @@ const NotificationsPage = () => {
                               />
                             </div>
                             <div>
-                              <h3 className="font-semibold">{request.sender.fullname}</h3>
+                              <h3 className="font-semibold">
+                                {request.sender.fullname}
+                              </h3>
                               <div className="flex flex-wrap gap-1.5 mt-1">
                                 <span className="badge badge-secondary badge-sm">
                                   Native: {request.sender.nativeLanguage}
@@ -69,13 +91,21 @@ const NotificationsPage = () => {
                               </div>
                             </div>
                           </div>
-                          <button
-                            className="btn btn-sm btn-primary"
-                            onClick={() => acceptRequestMutation(request._id)}
-                            disabled={isPending}
-                          >
-                            {isPending ? "Accepting..." : "Accept"}
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              className="btn btn-sm btn-primary"
+                              onClick={() => acceptRequestMutation(request._id)}
+                              disabled={isPending}
+                            >
+                              {isPending ? "Accepting..." : "Accept"}
+                            </button>
+                            <button
+                              className="btn btn-sm btn-outline btn-error"
+                              onClick={() => rejectRequestMutation(request._id)}
+                            >
+                              Reject
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -84,7 +114,7 @@ const NotificationsPage = () => {
               </section>
             )}
 
-               {acceptedRequests.length > 0 && (
+            {acceptedRequests.length > 0 && (
               <section className="space-y-4">
                 <h2 className="text-xl font-semibold flex items-center gap-2">
                   <BellIcon className="h-5 w-5 text-success" />
@@ -93,7 +123,10 @@ const NotificationsPage = () => {
 
                 <div className="space-y-3">
                   {acceptedRequests.map((notification) => (
-                    <div key={notification._id} className="card bg-base-200 shadow-sm">
+                    <div
+                      key={notification._id}
+                      className="card bg-base-200 shadow-sm"
+                    >
                       <div className="card-body p-4">
                         <div className="flex items-start gap-3">
                           <div className="avatar mt-1 size-10 rounded-full">
@@ -103,9 +136,12 @@ const NotificationsPage = () => {
                             />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-semibold">{notification.recipient.fullname}</h3>
+                            <h3 className="font-semibold">
+                              {notification.recipient.fullname}
+                            </h3>
                             <p className="text-sm my-1">
-                              {notification.recipient.fullname} accepted your friend request
+                              {notification.recipient.fullname} accepted your
+                              friend request
                             </p>
                             <p className="text-xs flex items-center opacity-70">
                               <ClockIcon className="h-3 w-3 mr-1" />
