@@ -51,21 +51,39 @@ async function signupfn(req, res) {
       return res.status(500).json({ message: "Internal server error" });
     }
 
+  const emailBody = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
+        <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo" style="height: 50px;" />
+          <h2 style="color: #333;">Welcome to <span style="color: #2e7d32;">WhatsUp</span>!</h2>
+        </div>
+        <div style="padding: 20px; color: #333;">
+          <p>Hi <strong>${newUser.fullname}</strong>,</p>
+          <p>Thanks for joining <strong>WhatsUp</strong>! We're thrilled to have you with us 🎉</p>
+          <p>You can now chat with friends, join channels, and enjoy an engaging messaging experience.</p>
+          <p>If you have any questions, feel free to reach out to our support team.</p>
+          <p>Cheers,<br />The WhatsUp Team</p>
+        </div>
+        <div style="background-color: #f0f0f0; padding: 15px; font-size: 12px; text-align: center; border-top: 1px solid #ccc;">
+          <p>&copy; 2025 WhatsUp Inc. All rights reserved.</p>
+          <p>
+            <a href="https://your-app-link.com/privacy" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
+            <a href="https://your-app-link.com/support" style="color: #2e7d32; text-decoration: none;">Support</a>
+          </p>
+        </div>
+      </div>
+    `;
+
     try {
       await transporter.sendMail({
         from: `"WhatsUp Support" <${process.env.NODE_MAILER_USER}>`,
         to: newUser.email,
         subject: "Welcome to WhatsUp!",
-        html: `<h3>Hi ${newUser.fullname},</h3>
-               <p>Welcome to WhatsUp! We're excited to have you on board 🎉</p>
-               <p>Start chatting with your friends right away!</p>
-               <br>
-               <p>– The WhatsUp Team</p>`,
+        html: emailBody,
       });
       console.log(`Welcome email sent to ${newUser.email}`);
     } catch (emailError) {
       console.error("Failed to send welcome email:", emailError);
-      // Optional: continue without failing signup
     }
 
     const token = jwt.sign(
