@@ -1,21 +1,23 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import {
   acceptFriendRequest,
   getFriendRequests,
   rejectFriendRequest,
 } from "../lib/api";
-import { useMutation } from "@tanstack/react-query";
 import {
   BellIcon,
   ClockIcon,
   MessageSquareIcon,
   UserCheckIcon,
+  ArrowLeftIcon,
 } from "lucide-react";
 import NoNotificationsFound from "../components/NoNotificationsFound";
+import { useNavigate } from "react-router-dom"; // if you're using react-router
 
 const NotificationsPage = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   const { data: friendRequests, isLoading } = useQuery({
     queryKey: ["friendRequest"],
     queryFn: getFriendRequests,
@@ -26,7 +28,7 @@ const NotificationsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
-      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }); // Add this line
+      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
     },
   });
 
@@ -35,7 +37,7 @@ const NotificationsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
-      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }); // Add this line here too
+      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
     },
   });
 
@@ -45,9 +47,19 @@ const NotificationsPage = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto max-w-4xl space-y-8">
+        {/* Back button for < lg screens */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-sm text-gray-500 hover:text-primary font-medium mb-2 lg:hidden"
+        >
+          <ArrowLeftIcon className="w-4 h-4 mr-1" />
+          Back
+        </button>
+
         <h1 className="text-2xl sm:text-3xl font-bold tracking-light mb-6">
           Notifications
         </h1>
+
         {isLoading ? (
           <div className="flex justify-center py-12">
             <span className="loading loading-spinner loading-lg"></span>
@@ -161,9 +173,8 @@ const NotificationsPage = () => {
               </section>
             )}
 
-            {incomingRequests.length === 0 && acceptedRequests.length === 0 && (
-              <NoNotificationsFound />
-            )}
+            {incomingRequests.length === 0 &&
+              acceptedRequests.length === 0 && <NoNotificationsFound />}
           </>
         )}
       </div>
