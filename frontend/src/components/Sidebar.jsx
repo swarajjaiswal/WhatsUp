@@ -15,9 +15,7 @@ const Sidebar = () => {
     refetchInterval: 10000, // optional live refresh every 10s
   });
 
-  const notificationCount =
-    (friendRequests?.incomingRequests?.length || 0) +
-    (friendRequests?.acceptedRequests?.length || 0);
+  const notificationCount = friendRequests?.incomingRequests?.length || 0;
 
   return (
     <aside className="w-64 bg-base-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0">
@@ -56,7 +54,8 @@ const Sidebar = () => {
         >
           <BellIcon className="size-5 text-base-content opacity-70" />
           <span>
-            Notifications {notificationCount > 0 && (`${notificationCount}`)}
+            Notifications
+            {notificationCount > 0 ? ` (${notificationCount})` : ""}
           </span>
         </Link>
       </nav>

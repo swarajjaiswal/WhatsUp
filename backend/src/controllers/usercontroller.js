@@ -1,6 +1,9 @@
 import express from "express";
 import User from "../models/user.js";
 import FriendRequest from "../models/FriendRequest.js";
+import transporter from "../mailer.js"
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function getRecommendedUsers(req, res) {
   try {
@@ -38,24 +41,31 @@ export async function sendFriendRequest(req, res) {
   try {
     const currentUserId = req.user._id;
     const friendId = req.params.id;
+
     if (currentUserId === friendId) {
       return res
         .status(400)
         .json({ message: "You cannot send a friend request to yourself." });
     }
+
     const friend = await User.findById(friendId);
+    const sender = await User.findById(currentUserId);
+
     if (!friend) {
       return res.status(404).json({ message: "User not found" });
     }
+
     if (friend.friends.includes(currentUserId)) {
-      return res.status(400).json({ message: "Friend request already sent" });
+      return res.status(400).json({ message: "You are already friends" });
     }
+
     const existingRequest = await FriendRequest.findOne({
       $or: [
         { sender: currentUserId, recipient: friendId },
         { sender: friendId, recipient: currentUserId },
       ],
     });
+
     if (existingRequest) {
       return res.status(400).json({ message: "Friend request already sent" });
     }
@@ -64,12 +74,48 @@ export async function sendFriendRequest(req, res) {
       sender: currentUserId,
       recipient: friendId,
     });
-    await friendRequest.save();
+
+    // Send email notification
+    try {
+     
+      const friendRequestLink ="http://localhost:5173";
+
+      await transporter.sendMail({
+        from: `"WhatsUp Friend Requests" <${process.env.NODE_MAILER_USER}>`,
+        to: friend.email,
+        subject: `${sender.fullname} wants to be your friend!`,
+        html: `
+          <h3>Hi ${friend.fullname},</h3>
+          <p><strong>${sender.fullname}</strong> has sent you a friend request on WhatsUp.</p>
+          <p>
+            <a href="${friendRequestLink}" style="
+              padding: 10px 16px;
+              background-color: #007bff;
+              color: white;
+              text-decoration: none;
+              border-radius: 5px;
+              display: inline-block;
+              margin-top: 10px;">
+              View Friend Requests
+            </a>
+          </p>
+          <br>
+          <p>– The WhatsUp Team</p>
+        `,
+      });
+
+      console.log(`Friend request email sent to ${friend.email}`);
+    } catch (emailError) {
+      console.error("Failed to send friend request email:", emailError);
+    }
+
     res.status(200).json({ message: "Friend request sent successfully" });
   } catch (error) {
+    console.error("Error sending friend request:", error);
     res.status(500).json({ message: "Error sending friend request" });
   }
 }
+
 
 export async function acceptFriendRequest(req, res) {
   try {

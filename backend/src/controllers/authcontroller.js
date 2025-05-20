@@ -2,9 +2,11 @@ import express from "express";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 import { upsertStreamUser } from "../lib/stream.js";
+import transporter from "../mailer.js"
 
 async function signupfn(req, res) {
   const { fullname, email, password } = req.body;
+
   try {
     if (!fullname || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -49,6 +51,23 @@ async function signupfn(req, res) {
       return res.status(500).json({ message: "Internal server error" });
     }
 
+    try {
+      await transporter.sendMail({
+        from: `"WhatsUp Support" <${process.env.NODE_MAILER_USER}>`,
+        to: newUser.email,
+        subject: "Welcome to WhatsUp!",
+        html: `<h3>Hi ${newUser.fullname},</h3>
+               <p>Welcome to WhatsUp! We're excited to have you on board 🎉</p>
+               <p>Start chatting with your friends right away!</p>
+               <br>
+               <p>– The WhatsUp Team</p>`,
+      });
+      console.log(`Welcome email sent to ${newUser.email}`);
+    } catch (emailError) {
+      console.error("Failed to send welcome email:", emailError);
+      // Optional: continue without failing signup
+    }
+
     const token = jwt.sign(
       { userId: newUser._id },
       process.env.JWT_SECRET_KEY,
@@ -61,6 +80,7 @@ async function signupfn(req, res) {
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+
     res.status(201).json({
       message: "User created successfully",
       user: newUser,
@@ -128,7 +148,8 @@ async function logoutfn(req, res) {
 async function onboard(req, res) {
   try {
     const userId = req.user._id;
-    const { fullname, bio, nativeLanguage, learningLanguage, location } = req.body;
+    const { fullname, bio, nativeLanguage, learningLanguage, location } =
+      req.body;
     if (
       !fullname ||
       !bio ||
@@ -161,7 +182,7 @@ async function onboard(req, res) {
     );
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
-    } 
+    }
 
     try {
       await upsertStreamUser({
@@ -185,4 +206,4 @@ async function onboard(req, res) {
   }
 }
 
-export { signupfn, loginfn, logoutfn,onboard };
+export { signupfn, loginfn, logoutfn, onboard };
