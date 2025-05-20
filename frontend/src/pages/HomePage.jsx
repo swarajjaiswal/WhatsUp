@@ -4,6 +4,7 @@ import {
   getOutgoingFriendReqs,
   getRecommendedUsers,
   getUserFriends,
+  rejectFriendRequest,
   sendFriendRequest,
 } from "../lib/api";
 import { Link } from "react-router-dom";
@@ -24,19 +25,32 @@ const Homepage = () => {
     queryKey: ["friends"],
     queryFn: getUserFriends,
   });
+
   const { data: recommendedUsers = [], isLoading: loadingUsers } = useQuery({
     queryKey: ["users"],
     queryFn: getRecommendedUsers,
   });
-const { data: outgoingFriendReqs } = useQuery({
-  queryKey: ["outgoingFriendReqs"],
-  queryFn: getOutgoingFriendReqs,
 
-});
+  const { data: outgoingFriendReqs } = useQuery({
+    queryKey: ["outgoingFriendReqs"],
+    queryFn: getOutgoingFriendReqs,
+  });
+
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
+      queryClient.refetchQueries({ queryKey: ["outgoingFriendReqs"] }); // Immediate refetch
+    },
+  });
+
+  const { mutate: rejectRequestMutation } = useMutation({
+    mutationFn: rejectFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
+      queryClient.refetchQueries({ queryKey: ["outgoingFriendReqs"] }); // Immediate refetch
     },
   });
 
@@ -46,8 +60,8 @@ const { data: outgoingFriendReqs } = useQuery({
       outgoingFriendReqs.forEach((user) => {
         outgoingIds.add(user.recipient._id);
       });
-      setOutgoingRequestsIds(outgoingIds);
     }
+    setOutgoingRequestsIds(outgoingIds);
   }, [outgoingFriendReqs]);
 
   return (
@@ -62,6 +76,7 @@ const { data: outgoingFriendReqs } = useQuery({
             Friend Requests
           </Link>
         </div>
+
         {loadingFriends ? (
           <div className="flex justify-center py-12">
             <span className="loading loading-spinner loading-lg" />
@@ -75,6 +90,7 @@ const { data: outgoingFriendReqs } = useQuery({
             ))}
           </div>
         )}
+
         <section>
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -89,6 +105,7 @@ const { data: outgoingFriendReqs } = useQuery({
               </div>
             </div>
           </div>
+
           {loadingUsers ? (
             <div className="flex justify-center py-12">
               <span className="loading loading-spinner loading-lg" />
@@ -128,7 +145,7 @@ const { data: outgoingFriendReqs } = useQuery({
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5 px-5">
                       <span className="badge badge-secondary">
                         {getLanguageFlag(user.nativeLanguage)}
                         Native: {capitialize(user.nativeLanguage)}
@@ -138,8 +155,9 @@ const { data: outgoingFriendReqs } = useQuery({
                         Learning: {capitialize(user.learningLanguage)}
                       </span>
                     </div>
+
                     {user.bio && (
-                      <p className="opacity-70 text-sm">{user.bio}</p>
+                      <p className="opacity-70 text-sm px-5 pt-2">{user.bio}</p>
                     )}
 
                     <button
