@@ -65,8 +65,3 @@ npm start
 # Start the frontend server
 cd ../frontend
 npm run dev
-
-
-
-
-
