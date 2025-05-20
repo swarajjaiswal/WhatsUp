@@ -2,7 +2,7 @@ import express from "express";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 import { upsertStreamUser } from "../lib/stream.js";
-import transporter from "../mailer.js"
+import transporter from "../mailer.js";
 
 async function signupfn(req, res) {
   const { fullname, email, password } = req.body;
@@ -51,7 +51,7 @@ async function signupfn(req, res) {
       return res.status(500).json({ message: "Internal server error" });
     }
 
-  const emailBody = `
+    const emailBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
         <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
           <img src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo" style="height: 50px;" />
@@ -60,15 +60,16 @@ async function signupfn(req, res) {
         <div style="padding: 20px; color: #333;">
           <p>Hi <strong>${newUser.fullname}</strong>,</p>
           <p>Thanks for joining <strong>WhatsUp</strong>! We're thrilled to have you with us 🎉</p>
-          <p>You can now chat with friends, join channels, and enjoy an engaging messaging experience.</p>
+          <p>You can now chat with friends,learn new languages, and enjoy an engaging messaging experience.</p>
           <p>If you have any questions, feel free to reach out to our support team.</p>
           <p>Cheers,<br />The WhatsUp Team</p>
         </div>
         <div style="background-color: #f0f0f0; padding: 15px; font-size: 12px; text-align: center; border-top: 1px solid #ccc;">
           <p>&copy; 2025 WhatsUp Inc. All rights reserved.</p>
           <p>
-            <a href="https://your-app-link.com/privacy" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
-            <a href="https://your-app-link.com/support" style="color: #2e7d32; text-decoration: none;">Support</a>
+        <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
+<a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Support</a>
+
           </p>
         </div>
       </div>

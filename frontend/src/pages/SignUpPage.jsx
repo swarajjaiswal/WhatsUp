@@ -46,7 +46,7 @@ const SignupPage = () => {
         {/* Left side */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           <div className="mb-4 flex items-center justify-start gap-2">
-            <LoaderPinwheel className="size-9 text-primary" />
+           <img className="h-10" src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo"  />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               WhatsUp
             </span>

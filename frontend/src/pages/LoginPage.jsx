@@ -14,7 +14,11 @@ const LoginPage = () => {
   const queryClient = useQueryClient();
   const { theme } = useThemeStore();
 
-  const { mutate:loginMutation, isPending, error } = useMutation({
+  const {
+    mutate: loginMutation,
+    isPending,
+    error,
+  } = useMutation({
     mutationFn: loginFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
@@ -34,7 +38,11 @@ const LoginPage = () => {
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           <div className="mb-4 flex items-center justify-start gap-2">
-            <LoaderPinwheel className="size-9 text-primary" />
+            <img
+              className="h-10"
+              src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png"
+              alt="WhatsUp Logo"
+            />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               WhatsUp
             </span>

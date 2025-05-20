@@ -78,28 +78,48 @@ export async function sendFriendRequest(req, res) {
     // Send email notification
     try {
       const friendRequestLink = process.env.FRONTEND_URL;
-
       await transporter.sendMail({
         from: `"WhatsUp Friend Requests" <${process.env.NODE_MAILER_USER}>`,
         to: friend.email,
-        subject: `${sender.fullname} wants to be your friend!`,
+        subject: `${sender.fullname} wants to be your friend on WhatsUp!`,
         html: `
-    <h3>Hi ${friend.fullname},</h3>
-    <p><strong>${sender.fullname}</strong> has sent you a friend request on WhatsUp.</p>
-    <p>
-      <a href="${friendRequestLink}" style="
-        padding: 10px 16px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        display: inline-block;
-        margin-top: 10px;">
-        View Friend Requests
-      </a>
-    </p>
-    <br>
-    <p>– The WhatsUp Team</p>
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
+    <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo" style="height: 50px;" />
+    <h1 style="color: #2e7d32;">WhatsUp</h1>
+      <h2 style="color: #333;">Friend Request from <span style="color: #2e7d32;">${
+        sender.fullname
+      }</span></h2>
+    </div>
+    <div style="padding: 20px; color: #333;">
+      <p>Hi <strong>${friend.fullname}</strong>,</p>
+      <p><strong>${
+        sender.fullname
+      }</strong> has sent you a friend request on <strong>WhatsUp</strong> 🎉</p>
+      <p>Click the button below to view and respond to the request:</p>
+      <p style="text-align: center; margin: 30px 0;">
+        <a href="${process.env.FRONTEND_URL}" style="
+          background-color: #2e7d32;
+          color: #ffffff;
+          padding: 12px 24px;
+          text-decoration: none;
+          border-radius: 5px;
+          font-size: 16px;
+          font-weight: bold;
+          display: inline-block;">
+          View Friend Requests
+        </a>
+      </p>
+      <p>If you didn’t expect this request, you can safely ignore this email.</p>
+    </div>
+    <div style="background-color: #f0f0f0; padding: 15px; font-size: 12px; text-align: center; border-top: 1px solid #ccc;">
+      <p>&copy; ${new Date().getFullYear()} WhatsUp Inc. All rights reserved.</p>
+      <p>
+        <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
+        <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Support</a>
+      </p>
+    </div>
+  </div>
   `,
       });
 
