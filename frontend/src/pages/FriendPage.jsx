@@ -1,4 +1,4 @@
-import React from 'react';
+
 import FriendCard from '../components/FriendCard'; 
 import NoFriendsFound from '../components/NoFriendsFound';
 import { useQuery } from '@tanstack/react-query';

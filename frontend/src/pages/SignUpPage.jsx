@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LoaderPinwheel } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signupFn } from "../lib/api";
 import { useThemeStore } from "../store/useThemeStore";

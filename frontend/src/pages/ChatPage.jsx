@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useUserAuth from "../hooks/useUserAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getStreamToken } from "../lib/api";

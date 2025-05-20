@@ -1,4 +1,3 @@
-import React from 'react'
 import { VideoIcon } from 'lucide-react'
 
 const CallBtn = ({ handleVideoCall }) => {

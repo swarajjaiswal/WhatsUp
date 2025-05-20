@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useThemeStore } from "../store/useThemeStore";
 import { Palette, PaletteIcon } from "lucide-react";
 import { THEMES } from "../constants";

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { LANGUAGE_TO_FLAG } from "../constants/index";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";

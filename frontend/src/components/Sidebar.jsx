@@ -1,4 +1,3 @@
-import React from "react";
 import useUserAuth from "../hooks/useUserAuth";
 import { Link, useLocation } from "react-router-dom";
 import { BellIcon, HomeIcon, LoaderPinwheel, UsersIcon } from "lucide-react";
