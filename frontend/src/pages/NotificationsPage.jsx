@@ -26,6 +26,7 @@ const NotificationsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }); // Add this line
     },
   });
 
@@ -34,7 +35,7 @@ const NotificationsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
-    
+      queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }); // Add this line here too
     },
   });
 

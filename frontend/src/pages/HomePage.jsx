@@ -28,11 +28,11 @@ const Homepage = () => {
     queryKey: ["users"],
     queryFn: getRecommendedUsers,
   });
-  const { data: outgoingFriendReqs } = useQuery({
-    queryKey: ["outgoingFriendReqs"],
-    queryFn: getOutgoingFriendReqs,
-  });
+const { data: outgoingFriendReqs } = useQuery({
+  queryKey: ["outgoingFriendReqs"],
+  queryFn: getOutgoingFriendReqs,
 
+});
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => {
@@ -44,7 +44,6 @@ const Homepage = () => {
     const outgoingIds = new Set();
     if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
       outgoingFriendReqs.forEach((user) => {
-    
         outgoingIds.add(user.recipient._id);
       });
       setOutgoingRequestsIds(outgoingIds);
@@ -139,27 +138,29 @@ const Homepage = () => {
                         Learning: {capitialize(user.learningLanguage)}
                       </span>
                     </div>
-                    {user.bio && <p className="opacity-70 text-sm">{user.bio}</p>}
+                    {user.bio && (
+                      <p className="opacity-70 text-sm">{user.bio}</p>
+                    )}
 
-                      <button
-                        className={`btn w-full mt-2 ${
-                          hasRequestBeenSent ? "btn-disabled" : "btn-primary"
-                        } `}
-                        onClick={() => sendRequestMutation(user._id)}
-                        disabled={hasRequestBeenSent || isPending}
-                      >
-                        {hasRequestBeenSent ? (
-                          <>
-                            <CheckCircleIcon className="size-4 mr-2" />
-                            Request Sent
-                          </>
-                        ) : (
-                          <>
-                            <UserPlusIcon className="size-4 mr-2" />
-                            Send Friend Request
-                          </>
-                        )}
-                      </button>
+                    <button
+                      className={`btn w-full mt-2 ${
+                        hasRequestBeenSent ? "btn-disabled" : "btn-primary"
+                      } `}
+                      onClick={() => sendRequestMutation(user._id)}
+                      disabled={hasRequestBeenSent || isPending}
+                    >
+                      {hasRequestBeenSent ? (
+                        <>
+                          <CheckCircleIcon className="size-4 mr-2" />
+                          Request Sent
+                        </>
+                      ) : (
+                        <>
+                          <UserPlusIcon className="size-4 mr-2" />
+                          Send Friend Request
+                        </>
+                      )}
+                    </button>
                   </div>
                 );
               })}
@@ -176,4 +177,4 @@ export default Homepage;
 const capitialize = (str) => {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
+};
