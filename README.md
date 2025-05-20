@@ -39,7 +39,7 @@
 ### 📁 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/whatsup.git
+git clone https://github.com/swarajjaiswal/WhatsUp.git
 cd whatsup
 cd frontend
 npm install
