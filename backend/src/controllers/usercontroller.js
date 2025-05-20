@@ -77,7 +77,11 @@ export async function sendFriendRequest(req, res) {
 
     // Send email notification
     try {
-      const friendRequestLink = process.env.FRONTEND_URL;
+      const friendRequestLink =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:5173"
+          : "/";
+
       await transporter.sendMail({
         from: `"WhatsUp Friend Requests" <${process.env.NODE_MAILER_USER}>`,
         to: friend.email,
@@ -98,7 +102,7 @@ export async function sendFriendRequest(req, res) {
       }</strong> has sent you a friend request on <strong>WhatsUp</strong> 🎉</p>
       <p>Click the button below to view and respond to the request:</p>
       <p style="text-align: center; margin: 30px 0;">
-        <a href="${process.env.FRONTEND_URL}" style="
+        <a href="${friendRequestLink}" style="
           background-color: #2e7d32;
           color: #ffffff;
           padding: 12px 24px;

@@ -22,6 +22,7 @@
     "stream-chat": "^9.1.1",
     "stream-chat-react": "^13.0.1",
     "tailwindcss": "^4.1.7",
+    "whatsup": "file:..",
     "zustand": "^5.0.4"
   },
   "devDependencies": {
