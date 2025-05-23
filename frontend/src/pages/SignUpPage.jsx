@@ -10,13 +10,11 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false); // <-- new state for toggling password visibility
   const { theme } = useThemeStore();
 
   const queryClient = useQueryClient();
 
-  // useMutation is used instead of useQuery as useQuery is generally used for fetching data from backend while
-  //useMutation is used for creating, updating or deleting data in backend.
-  // In this case we are creating a new user in the backend so we will use useMutation.
   const {
     mutate: signUpMutation,
     isPending,
@@ -24,10 +22,6 @@ const SignupPage = () => {
   } = useMutation({
     mutationFn: signupFn,
     onSuccess: () =>
-      // This tells React Query:
-      // “The data for the query key ["authUser"] might be stale — refetch it!”
-      // This is useful because after a new user signs up, you likely want to update the app with their authenticated data.
-      // Without this, the useQuery(["authUser"]) hook wouldn’t automatically know that the user has signed up and is now logged in.
       queryClient.invalidateQueries({ queryKey: ["authUser"] }),
   });
 
@@ -45,7 +39,11 @@ const SignupPage = () => {
         {/* Left side */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           <div className="mb-4 flex items-center justify-start gap-2">
-           <img className="h-10" src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo"  />
+            <img
+              className="h-10"
+              src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png"
+              alt="WhatsUp Logo"
+            />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
               WhatsUp
             </span>
@@ -107,15 +105,15 @@ const SignupPage = () => {
                   />
                 </div>
 
-                {/* Password */}
-                <div className="form-control w-full">
+                {/* Password with toggle */}
+                <div className="form-control w-full relative">
                   <label className="label">
                     <span className="label-text">Password</span>
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="********"
-                    className="input input-bordered w-full"
+                    className="input input-bordered w-full pr-10"
                     value={signupData.password}
                     onChange={(e) =>
                       setSignupData({
@@ -125,7 +123,54 @@ const SignupPage = () => {
                     }
                     required
                   />
-                  <p className="text-xs opacity-70">
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      // eye-off icon
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.117.18-2.19.513-3.193m14.362 14.362a9.954 9.954 0 005.61-5.61M9.88 9.88l4.24 4.24M3 3l18 18"
+                        />
+                      </svg>
+                    ) : (
+                      // eye icon
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                  <p className="text-xs opacity-70 mt-1">
                     Password must be at least 6 characters long
                   </p>
                 </div>
