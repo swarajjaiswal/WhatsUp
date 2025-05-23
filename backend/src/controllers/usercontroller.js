@@ -80,7 +80,7 @@ export async function sendFriendRequest(req, res) {
       const friendRequestLink =
         process.env.NODE_ENV === "development"
           ? "http://localhost:5173"
-          : "/";
+          : "https://whatsup-d95h.onrender.com/notifications";
 
       await transporter.sendMail({
         from: `"WhatsUp Friend Requests" <${process.env.NODE_MAILER_USER}>`,
