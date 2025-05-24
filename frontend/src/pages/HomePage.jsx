@@ -38,9 +38,10 @@ const Homepage = () => {
 
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
-    onSuccess: () => {
+    onSuccess: (data, userId) => {
+      setOutgoingRequestsIds((prev) => new Set(prev).add(userId));
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
-      queryClient.refetchQueries({ queryKey: ["outgoingFriendReqs"] }); // Immediate refetch
+      queryClient.refetchQueries({ queryKey: ["outgoingFriendReqs"] });
     },
   });
 

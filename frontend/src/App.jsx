@@ -143,7 +143,6 @@ const App = () => {
               )
             }
           />
-         
         </Routes>
       </Router>
       <Toaster />
