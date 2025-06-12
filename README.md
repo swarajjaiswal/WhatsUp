@@ -12,7 +12,6 @@
 - 📨 Email verification & notifications via **Nodemailer**
 - 🎨 Elegant UI using **Tailwind CSS** & **DaisyUI**
 - ⚡ Fast and scalable state management using **Zustand**
-- 📦 MERN Stack: MongoDB, Express, React, Node.js
 
 ---
 
