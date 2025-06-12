@@ -87,7 +87,7 @@ const Navbar = () => {
           <div className="relative p-6 rounded-xl shadow-lg w-[90vw] max-w-md">
             <button
               onClick={() => setShowProfile(false)}
-              className="absolute top-14 right-4 text-xl"
+              className="absolute top-14 right-4 text-xl cursor-pointer"
               aria-label="Close Profile Modal"
             >
               ✕
