@@ -236,3 +236,25 @@ export async function getOutgoingFriendReqs(req, res) {
       .json({ message: "Error fetching outgoing friend requests" });
   }
 }
+
+export async function updateProfilePic(req, res) {
+  try {
+    const { profilePic } = req.body;
+    if (!profilePic) {
+      return res.status(400).json({ message: "Profile picture URL is required" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { profilePic },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Profile picture updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile picture" });
+  }
+}

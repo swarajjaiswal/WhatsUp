@@ -61,3 +61,8 @@ export async function getStreamToken(){
   const res = await axiosInstance.get("/chat/token");
   return res.data;
 }
+
+export const updateProfilePic=async(profilePicData)=>{
+  const res = await axiosInstance.put("/users/profilepic", profilePicData);
+  return res.data;
+}
