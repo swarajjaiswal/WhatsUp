@@ -77,3 +77,9 @@ export const updateProfilePic = async (profilePicData) => {
   const res = await axiosInstance.put("/users/profilepic", profilePicData);
   return res.data;
 };
+
+// lib/api.js
+export const chatAiFn = async ({ userId, message }) => {
+  const response = await axiosInstance.post("/nexa", { userId, message });
+  return response.data;
+};

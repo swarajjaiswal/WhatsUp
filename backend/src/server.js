@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import authRoute from "./routes/authroute.js";
 import userRoute from "./routes/userRoute.js";
 import chatRoute from "./routes/chatRoute.js";
+import messageRoute from "./routes/message.js";
 import connectDB from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/chat", chatRoute);
+app.use('/api/nexa',messageRoute);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

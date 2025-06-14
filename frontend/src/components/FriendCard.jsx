@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 
 const FriendCard = ({ friend }) => {
+  const isNexa = friend.fullname === "Nexa";
+  const nexaBio = "Your friendly AI assistant!";
+
   return (
     <div className="card bg-base-200 hover:shadow-md transition-shadow">
       <div className="card-body p-4">
@@ -22,18 +25,25 @@ const FriendCard = ({ friend }) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          <span className="badge badge-secondary text-xs flex items-center gap-1">
-            {getLanguageFlag(friend.nativeLanguage)}
-            <span>Native: {friend.nativeLanguage}</span>
-          </span>
-          <span className="badge badge-outline text-xs flex items-center gap-1">
-            {getLanguageFlag(friend.learningLanguage)}
-            <span>Learning: {friend.learningLanguage}</span>
-          </span>
-        </div>
+        {!isNexa ? (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            <span className="badge badge-secondary text-xs flex items-center gap-1">
+              {getLanguageFlag(friend.nativeLanguage)}
+              <span>Native: {friend.nativeLanguage}</span>
+            </span>
+            <span className="badge badge-outline text-xs flex items-center gap-1">
+              {getLanguageFlag(friend.learningLanguage)}
+              <span>Learning: {friend.learningLanguage}</span>
+            </span>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400 mb-3">{friend.bio || nexaBio}</p>
+        )}
 
-        <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
+        <Link
+          to={isNexa ? "/nexa" : `/chat/${friend._id}`}
+          className="btn btn-outline w-full"
+        >
           Message
         </Link>
       </div>
@@ -44,7 +54,7 @@ const FriendCard = ({ friend }) => {
 export default FriendCard;
 
 export function getLanguageFlag(language) {
-  if (!language) return <></>; // Use empty fragment instead of null
+  if (!language) return <></>;
 
   const langLower = language.toLowerCase();
   const countryCode = LANGUAGE_TO_FLAG[langLower];
@@ -59,5 +69,5 @@ export function getLanguageFlag(language) {
     );
   }
 
-  return <></>; // Safe fallback
+  return <></>;
 }

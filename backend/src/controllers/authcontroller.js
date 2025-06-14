@@ -1,4 +1,3 @@
-import express from "express";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -30,14 +29,34 @@ async function signupfn(req, res) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // ✅ Ensure Nexa (AI assistant) exists or create her
+    let nexa = await User.findOne({ email: "nexa@ai.com" });
+
+    if (!nexa) {
+      const nexaAvatar = `https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://media.easy-peasy.ai/78e88f76-29bf-4289-9624-719aec0f7bcb/e516f677-4846-4a28-9707-ba00ffa49479.png`;
+      const newNexa = new User({
+        fullname: "Nexa",
+        email: "nexa@ai.com",
+        password: "nexa1234", // Will be hashed by pre-save hook
+        bio: "Your friendly AI assistant!",
+        profilePic: nexaAvatar,
+        isOnboarded: true,
+      });
+      nexa = await newNexa.save();
+    }
+
+    // ✅ Create new user with Nexa in friends list
     const id = Math.floor(Math.random() * 100) + 1;
     const randomAvatar = `https://avatar.iran.liara.run/public/${id}.png`;
+
     const newUser = new User({
       fullname,
       email,
       password,
       profilePic: randomAvatar,
+      friends: [nexa._id],
     });
+
     await newUser.save();
 
     try {
@@ -62,16 +81,15 @@ async function signupfn(req, res) {
         <div style="padding: 20px; color: #333;">
           <p>Hi <strong>${newUser.fullname}</strong>,</p>
           <p>Thanks for joining <strong>WhatsUp</strong>! We're thrilled to have you with us 🎉</p>
-          <p>You can now chat with friends,learn new languages, and enjoy an engaging messaging experience.</p>
+          <p>You can now chat with friends, learn new languages, and enjoy an engaging messaging experience.</p>
           <p>If you have any questions, feel free to reach out to our support team.</p>
           <p>Cheers,<br />The WhatsUp Team</p>
         </div>
         <div style="background-color: #f0f0f0; padding: 15px; font-size: 12px; text-align: center; border-top: 1px solid #ccc;">
           <p>&copy; 2025 WhatsUp Inc. All rights reserved.</p>
           <p>
-        <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
-<a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Support</a>
-
+            <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
+            <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Support</a>
           </p>
         </div>
       </div>
@@ -99,7 +117,7 @@ async function signupfn(req, res) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
@@ -239,7 +257,7 @@ async function forgotPasswordFn(req, res) {
   await user.save({ validateBeforeSave: false });
 
   const resetPath = `/reset-password/${resetToken}`;
-  const resetUrl = `${req.protocol}://${req.get("host")}${resetPath}`;
+  const resetUrl = `${process.env.FRONTEND_URL}${resetPath}`;
 
   const emailBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">

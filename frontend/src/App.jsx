@@ -19,6 +19,7 @@ import { useThemeStore } from "./store/useThemeStore.js";
 import FriendPage from "./pages/FriendPage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
+import ChatAi from "./pages/ChatAi.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useUserAuth();
@@ -165,6 +166,19 @@ const App = () => {
               )
             }
           />
+        <Route
+  path="/nexa"
+  element={
+    isAuthenticated && isOnboarded ? (
+      <Layout showSidebar={true}>
+        <ChatAi />
+      </Layout>
+    ) : (
+      <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+    )
+  }
+/>
+
         </Routes>
       </Router>
       <Toaster />
