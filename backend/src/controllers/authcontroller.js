@@ -166,6 +166,7 @@ async function logoutfn(req, res) {
   res.clearCookie("token");
   res.status(200).json({ message: "Logout successful" });
 }
+
 async function onboard(req, res) {
   try {
     const userId = req.user._id;

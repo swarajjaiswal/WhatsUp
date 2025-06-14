@@ -20,6 +20,7 @@ router.post("/logout", logoutfn);
 router.post("/onboarding", protectRoute, onboard);
 
 router.post("/forgot-password", forgotPasswordFn);
+
 router.post("/reset-password/:token", resetPasswordFn);
 
 router.get("/me", protectRoute, (req, res) => {

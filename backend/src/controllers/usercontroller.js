@@ -22,6 +22,7 @@ export async function getRecommendedUsers(req, res) {
     res.status(500).json({ message: "Error fetching recommended users" });
   }
 }
+
 export async function getMyFriends(req, res) {
   try {
     const currentUserId = req.user._id;
@@ -175,6 +176,7 @@ export async function acceptFriendRequest(req, res) {
     res.status(500).json({ message: "Error accepting friend request" });
   }
 }
+
 export async function rejectFriendRequest(req, res) {
   try {
     const currentUserId = req.user._id;
