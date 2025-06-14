@@ -20,6 +20,7 @@ import FriendPage from "./pages/FriendPage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ChatAi from "./pages/ChatAi.jsx";
+import PremiumPage from "./pages/PremiumPage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useUserAuth();
@@ -166,19 +167,30 @@ const App = () => {
               )
             }
           />
-        <Route
-  path="/nexa"
-  element={
-    isAuthenticated && isOnboarded ? (
-      <Layout showSidebar={true}>
-        <ChatAi />
-      </Layout>
-    ) : (
-      <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
-    )
-  }
-/>
-
+          <Route
+            path="/nexa"
+            element={
+              isAuthenticated && isOnboarded ? (
+                <Layout showSidebar={true}>
+                  <ChatAi />
+                </Layout>
+              ) : (
+                <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+              )
+            }
+          />
+          <Route
+            path="/premium"
+            element={
+              isAuthenticated && isOnboarded ? (
+                <Layout showSidebar={true}>
+                  <PremiumPage />
+                </Layout>
+              ) : (
+                <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+              )
+            }
+          />
         </Routes>
       </Router>
       <Toaster />
