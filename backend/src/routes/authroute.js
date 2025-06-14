@@ -4,6 +4,8 @@ import {
   loginfn,
   logoutfn,
   onboard,
+  forgotPasswordFn,
+  resetPasswordFn,
 } from "../controllers/authcontroller.js";
 import { protectRoute } from "../middleware/authMiddleware.js";
 
@@ -16,6 +18,9 @@ router.post("/login", loginfn);
 router.post("/logout", logoutfn);
 
 router.post("/onboarding", protectRoute, onboard);
+
+router.post("/forgot-password", forgotPasswordFn);
+router.post("/reset-password/:token", resetPasswordFn);
 
 router.get("/me", protectRoute, (req, res) => {
   res.status(200).json({

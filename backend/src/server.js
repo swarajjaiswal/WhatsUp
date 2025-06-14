@@ -13,29 +13,29 @@ app.use(cookieParser());
 dotenv.config();
 
 const __dirname = path.resolve();
+app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin:"http://localhost:5173",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/chat", chatRoute);
 
-if(process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend","dist","index.html"));
-  });}
-
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();
-});         
+});

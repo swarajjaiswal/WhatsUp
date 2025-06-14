@@ -1,6 +1,8 @@
 import express from "express";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import { upsertStreamUser } from "../lib/stream.js";
 import transporter from "../mailer.js";
 
@@ -225,4 +227,98 @@ async function onboard(req, res) {
   }
 }
 
-export { signupfn, loginfn, logoutfn, onboard };
+async function forgotPasswordFn(req, res) {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email is required" });
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  const resetToken = user.generateResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  const resetPath = `/reset-password/${resetToken}`;
+  const resetUrl = `${req.protocol}://${req.get("host")}${resetPath}`;
+
+  const emailBody = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
+      <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo" style="height: 50px;" />
+        <h2 style="color: #333;">Reset Your <span style="color: #2e7d32;">WhatsUp</span> Password</h2>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <p>Hi <strong>${user.fullname}</strong>,</p>
+        <p>You requested a password reset for your WhatsUp account.</p>
+        <p>Click the button below to reset your password:</p>
+        <div style="text-align:center; margin: 30px 0;">
+          <a href="${resetUrl}" style="background-color:#2e7d32; color:#fff; padding:10px 20px; border-radius:4px; text-decoration:none;">Reset Password</a>
+        </div>
+        <p>If the button doesn't work, copy and paste this URL into your browser:</p>
+        <p style="word-break:break-word; color:#555;">${resetUrl}</p>
+        <p>This link will expire in 10 minutes.</p>
+        <p>If you didn’t request this, just ignore this email.</p>
+        <p>– The WhatsUp Team</p>
+      </div>
+      <div style="background-color: #f0f0f0; padding: 15px; font-size: 12px; text-align: center; border-top: 1px solid #ccc;">
+        <p>&copy; 2025 WhatsUp Inc. All rights reserved.</p>
+        <p>
+          <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Privacy Policy</a> |
+          <a href="#" onclick="return false;" style="color: #2e7d32; text-decoration: none;">Support</a>
+        </p>
+      </div>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"WhatsUp Support" <${process.env.NODE_MAILER_USER}>`,
+    to: email,
+    subject: "Reset Your WhatsUp Password",
+    html: emailBody,
+  });
+
+  res.status(200).json({ message: "Password reset link sent" });
+}
+
+async function resetPasswordFn(req, res) {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  if (!password || password.length < 6)
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters long" });
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user)
+    return res.status(400).json({ message: "Invalid or expired token" });
+
+  const isSamePassword = await bcrypt.compare(password, user.password);
+  if (isSamePassword) {
+    return res
+      .status(400)
+      .json({ message: "New password must be different from the old one" });
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+
+  await user.save();
+
+  res.status(200).json({ message: "Password reset successful" });
+}
+
+export {
+  signupfn,
+  loginfn,
+  logoutfn,
+  onboard,
+  forgotPasswordFn,
+  resetPasswordFn,
+};

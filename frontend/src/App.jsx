@@ -17,6 +17,8 @@ import OnBoardingPage from "./pages/OnBoardingPage.jsx";
 import Layout from "./components/Layout.jsx";
 import { useThemeStore } from "./store/useThemeStore.js";
 import FriendPage from "./pages/FriendPage.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ChangePassword from "./pages/ChangePassword.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useUserAuth();
@@ -58,6 +60,26 @@ const App = () => {
             element={
               !isAuthenticated ? (
                 <LoginPage />
+              ) : (
+                <Navigate to={isOnboarded ? "/" : "/onboarding"} />
+              )
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              !isAuthenticated ? (
+                <ForgotPassword />
+              ) : (
+                <Navigate to={isOnboarded ? "/" : "/onboarding"} />
+              )
+            }
+          />
+          <Route
+            path="/reset-password/:token"
+            element={
+              !isAuthenticated ? (
+                <ChangePassword />
               ) : (
                 <Navigate to={isOnboarded ? "/" : "/onboarding"} />
               )

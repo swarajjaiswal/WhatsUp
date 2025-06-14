@@ -8,6 +8,15 @@ export const loginFn = async (loginData) => {
   const response = await axiosInstance.post("/auth/login", loginData);
   return response.data;
 };
+export const forgotPasswordFn = async ({ email }) => {
+  const response = await axiosInstance.post("/auth/forgot-password", { email });
+  return response.data;
+};
+
+export const changePasswordFn = async ({ password, token }) => {
+  const response = await axiosInstance.post(`/auth/reset-password/${token}`, { password });
+  return response.data;
+};
 
 export const logoutFn = async () => {
   const response = await axiosInstance.post("/auth/logout");
@@ -30,39 +39,41 @@ export const completeOnBoarding = async (userData) => {
 export const getUserFriends = async () => {
   const res = await axiosInstance.get("/users/friends");
   return res.data;
-}
+};
 export const getRecommendedUsers = async () => {
   const res = await axiosInstance.get("/users");
   return res.data;
-}
+};
 export const getOutgoingFriendReqs = async () => {
   const res = await axiosInstance.get("/users/outgoing-friend-requests");
   return res.data;
-}
+};
 
 export const sendFriendRequest = async (userId) => {
   const res = await axiosInstance.post(`/users/friend-request/${userId}`);
   return res.data;
-}
+};
 export const getFriendRequests = async () => {
   const res = await axiosInstance.get("/users/friend-requests");
   return res.data;
-} 
+};
 export const acceptFriendRequest = async (userId) => {
   const res = await axiosInstance.put(`/users/friend-request/${userId}/accept`);
   return res.data;
-}
+};
 export const rejectFriendRequest = async (userId) => {
-  const res = await axiosInstance.post(`/users/friend-request/${userId}/reject`);
+  const res = await axiosInstance.post(
+    `/users/friend-request/${userId}/reject`
+  );
   return res.data;
-}
+};
 
-export async function getStreamToken(){
+export async function getStreamToken() {
   const res = await axiosInstance.get("/chat/token");
   return res.data;
 }
 
-export const updateProfilePic=async(profilePicData)=>{
+export const updateProfilePic = async (profilePicData) => {
   const res = await axiosInstance.put("/users/profilepic", profilePicData);
   return res.data;
-}
+};
