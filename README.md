@@ -4,12 +4,15 @@
 
 ---
 
+
 ## 🚀 Features
 
 - 💬 Real-time messaging powered by **Stream Chat API**
 - 📹 Video call support with direct call links
 - 🔐 Secure JWT-based user authentication
-- 📨 Email verification & notifications via **Nodemailer**
+- 📧 Email verification & notifications via **Nodemailer**
+- 🤖 AI Chat assistant powered by **Gemini API**
+- 💳 Razorpay payment integration for premium features
 - 🎨 Elegant UI using **Tailwind CSS** & **DaisyUI**
 - ⚡ Fast and scalable state management using **Zustand**
 
@@ -29,8 +32,9 @@
 - Express.js
 - MongoDB with Mongoose
 - JWT Authentication
-- Nodemailer for email services
-
+- Nodemailer
+- Razorpay Integration
+- Gemini API for AI chat
 ---
 
 ## 📦 Installation Guide
