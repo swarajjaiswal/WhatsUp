@@ -256,8 +256,12 @@ async function forgotPasswordFn(req, res) {
   const resetToken = user.generateResetToken();
   await user.save({ validateBeforeSave: false });
 
-  const resetPath = `/reset-password/${resetToken}`;
-  const resetUrl = `${process.env.FRONTEND_URL}${resetPath}`;
+const baseUrl = process.env.NODE_ENV === "production"
+  ? "https://whatsup-d95h.onrender.com"
+  : "http://localhost:5173"; 
+
+const resetUrl = `${baseUrl}${resetPath}`;
+
 
   const emailBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
