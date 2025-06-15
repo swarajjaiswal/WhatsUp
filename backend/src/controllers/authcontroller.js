@@ -256,10 +256,10 @@ async function forgotPasswordFn(req, res) {
   const resetToken = user.generateResetToken();
   await user.save({ validateBeforeSave: false });
 
+const resetPath = `/reset-password/${resetToken}`;
 const baseUrl = process.env.NODE_ENV === "production"
   ? "https://whatsup-d95h.onrender.com"
   : "http://localhost:5173"; 
-
 const resetUrl = `${baseUrl}${resetPath}`;
 
 
