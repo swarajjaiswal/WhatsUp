@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "nodemailer": "^7.0.3",
+    "razorpay": "^2.9.6",
     "stream-chat": "^8.60.0",
     "whatsup": "file:.."
   },

@@ -22,22 +22,18 @@ const ChatAi = () => {
     onSuccess: (data) => {
       const replyText = data?.reply || "Sorry, I didn't understand that.";
       const newMessage = { from: "nexa", text: replyText };
-      setMessages((prev) => {
-        const updated = [...prev, newMessage];
-        localStorage.setItem(messagesKey, JSON.stringify(updated));
-        return updated;
-      });
+      const updated = [...messages, newMessage];
+      setMessages(updated);
+      localStorage.setItem(messagesKey, JSON.stringify(updated));
     },
     onError: () => {
       const errorMessage = {
         from: "nexa",
         text: "Sorry, something went wrong.",
       };
-      setMessages((prev) => {
-        const updated = [...prev, errorMessage];
-        localStorage.setItem(messagesKey, JSON.stringify(updated));
-        return updated;
-      });
+      const updated = [...messages, errorMessage];
+      setMessages(updated);
+      localStorage.setItem(messagesKey, JSON.stringify(updated));
     },
   });
 
@@ -46,22 +42,18 @@ const ChatAi = () => {
 
     const question = input.trim();
     const newCredits = credits - 1;
-
     const newMessage = { from: "user", text: question };
-    setMessages((prev) => {
-      const updated = [...prev, newMessage];
-      localStorage.setItem(messagesKey, JSON.stringify(updated));
-      return updated;
-    });
+    const updated = [...messages, newMessage];
 
+    setMessages(updated);
     setCredits(newCredits);
+    setInput("");
+    localStorage.setItem(messagesKey, JSON.stringify(updated));
     localStorage.setItem(creditsKey, newCredits.toString());
-
     if (newCredits === 0) {
       localStorage.setItem(resetKey, new Date().toISOString());
     }
 
-    setInput("");
     chatAiMutation({ userId: authUser._id, message: question });
   };
 
@@ -72,27 +64,11 @@ const ChatAi = () => {
   useEffect(() => {
     if (!authUser?._id) return;
 
-    // Load messages
-    const storedMessages = localStorage.getItem(messagesKey);
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages));
-    } else {
-      const defaultMsg = [
-        {
-          from: "nexa",
-          text: "Hey! This is Nexa. How may I help you today?",
-        },
-      ];
-      setMessages(defaultMsg);
-      localStorage.setItem(messagesKey, JSON.stringify(defaultMsg));
-    }
-
-    // Load/reset credits
     const storedCredits = localStorage.getItem(creditsKey);
     const lastReset = localStorage.getItem(resetKey);
     const now = new Date();
 
-    if (storedCredits && parseInt(storedCredits, 10) === 0 && lastReset) {
+    if (storedCredits === "0" && lastReset) {
       const last = new Date(lastReset);
       const isNewDay =
         last.getDate() !== now.getDate() ||
@@ -103,24 +79,33 @@ const ChatAi = () => {
         localStorage.setItem(creditsKey, "10");
         setCredits(10);
         localStorage.removeItem(resetKey);
-      } else {
-        setCredits(0);
+        return;
       }
+    }
+
+    const parsed = parseInt(storedCredits, 10);
+    setCredits(!isNaN(parsed) ? parsed : 10);
+  }, [authUser?._id]);
+
+  useEffect(() => {
+    if (!authUser?._id) return;
+    const stored = localStorage.getItem(messagesKey);
+    if (stored) {
+      setMessages(JSON.parse(stored));
     } else {
-      setCredits(storedCredits ? parseInt(storedCredits, 10) : 10);
+      const defaultMsg = [
+        { from: "nexa", text: "Hey! This is Nexa. How may I help you today?" },
+      ];
+      setMessages(defaultMsg);
+      localStorage.setItem(messagesKey, JSON.stringify(defaultMsg));
     }
   }, [authUser?._id]);
 
   return (
     <div className="flex flex-col bg-black text-white h-[calc(100vh-64px)]">
-      {/* Header */}
       <div className="p-4 bg-white text-black flex items-center justify-between shadow">
         <div className="flex items-center gap-3">
-          <Link
-            to="/"
-            className="p-2 rounded-full hover:bg-gray-200 transition duration-200"
-            title="Go Back"
-          >
+          <Link to="/" className="p-2 rounded-full hover:bg-gray-200 transition" title="Go Back">
             <ArrowLeft className="w-5 h-5 text-black" />
           </Link>
           <img
@@ -133,15 +118,9 @@ const ChatAi = () => {
         <div className="text-sm font-medium">Credits: {credits}</div>
       </div>
 
-      {/* Chat Area */}
       <div className="flex-1 overflow-y-auto bg-zinc-900 px-4 py-4 space-y-4">
         {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              msg.from === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
+          <div key={index} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
             <div className="flex items-end gap-2 max-w-xs">
               {msg.from === "nexa" && (
                 <img
@@ -152,9 +131,7 @@ const ChatAi = () => {
               )}
               <div
                 className={`px-3 py-2 rounded-lg text-sm ${
-                  msg.from === "user"
-                    ? "bg-blue-200 text-black"
-                    : "bg-zinc-800 text-white"
+                  msg.from === "user" ? "bg-blue-200 text-black" : "bg-zinc-800 text-white"
                 }`}
               >
                 {msg.text}
@@ -162,13 +139,10 @@ const ChatAi = () => {
             </div>
           </div>
         ))}
-        {isPending && (
-          <div className="text-gray-400 text-sm ml-2">Nexa is typing...</div>
-        )}
-        <div ref={bottomRef}></div>
+        {isPending && <div className="text-gray-400 text-sm ml-2">Nexa is typing...</div>}
+        <div ref={bottomRef} />
       </div>
 
-      {/* Credits Message */}
       {credits <= 0 && (
         <div className="text-center text-sm mt-4 px-4 py-3 rounded-lg bg-gradient-to-r from-purple-900 to-black text-purple-200 shadow-md">
           <p className="mb-1">🚫 You’ve used all free messages for today.</p>
@@ -185,7 +159,6 @@ const ChatAi = () => {
         </div>
       )}
 
-      {/* Input Section */}
       <div className="p-4 bg-gray-100 flex items-center gap-2">
         <input
           type="text"
@@ -198,9 +171,7 @@ const ChatAi = () => {
         <button
           onClick={handleSend}
           className={`px-4 py-2 rounded-full ${
-            credits <= 0
-              ? "bg-black text-purple-200 cursor-not-allowed"
-              : "bg-black text-white hover:bg-gray-900"
+            credits <= 0 ? "bg-black text-purple-200 cursor-not-allowed" : "bg-black text-white hover:bg-gray-900"
           }`}
         >
           ➤

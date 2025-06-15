@@ -21,6 +21,8 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ChatAi from "./pages/ChatAi.jsx";
 import PremiumPage from "./pages/PremiumPage.jsx";
+import { Check } from "lucide-react";
+import CheckoutPage from "./pages/CheckoutPage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useUserAuth();
@@ -185,6 +187,20 @@ const App = () => {
               isAuthenticated && isOnboarded ? (
                 <Layout showSidebar={true}>
                   <PremiumPage />
+                
+                </Layout>
+              ) : (
+                <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+              )
+            }
+          />
+
+            <Route
+            path="/checkout"
+            element={
+              isAuthenticated && isOnboarded ? (
+                <Layout showSidebar={true}>
+                  <CheckoutPage />
                 </Layout>
               ) : (
                 <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />

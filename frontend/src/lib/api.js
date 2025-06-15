@@ -14,7 +14,9 @@ export const forgotPasswordFn = async ({ email }) => {
 };
 
 export const changePasswordFn = async ({ password, token }) => {
-  const response = await axiosInstance.post(`/auth/reset-password/${token}`, { password });
+  const response = await axiosInstance.post(`/auth/reset-password/${token}`, {
+    password,
+  });
   return response.data;
 };
 
@@ -82,4 +84,27 @@ export const updateProfilePic = async (profilePicData) => {
 export const chatAiFn = async ({ userId, message }) => {
   const response = await axiosInstance.post("/nexa", { userId, message });
   return response.data;
+};
+
+export const createOrderMutationFn = async ({ plan, billingCycle }) => {
+  const baseAmount =
+    billingCycle === "monthly" ? plan.monthlyPrice : plan.annualPrice;
+  const finalAmount = Math.round(baseAmount * 1.18 * 100); // in paise
+
+  try {
+    const res = await axiosInstance.post("/razorpay/create-order", {
+      amount: finalAmount / 100, // in rupees
+    });
+
+    return res.data;
+  } catch (err) {
+    console.error("Order creation failed:", err);
+    throw new Error("Failed to create Razorpay order");
+  }
+};
+
+
+export const verifyPaymentMutationFn = async (paymentData) => {
+  const res = await axiosInstance.post("/razorpay/verify", paymentData);
+  return res.data;
 };
