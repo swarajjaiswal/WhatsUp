@@ -80,10 +80,14 @@ export const updateProfilePic = async (profilePicData) => {
   return res.data;
 };
 
-// lib/api.js
 export const chatAiFn = async ({ userId, message }) => {
   const response = await axiosInstance.post("/nexa", { userId, message });
   return response.data;
+};
+
+export const unfriendUserFn = async (userId) => {
+  const res = await axiosInstance.post(`/users/friends/${userId}/unfriend`);
+  return res.data;
 };
 
 export const createOrderMutationFn = async ({ plan, billingCycle }) => {

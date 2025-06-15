@@ -20,6 +20,7 @@ import NoFriendsFound from "../components/NoFriendsFound";
 const Homepage = () => {
   const queryClient = useQueryClient();
   const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
+  const [sendingTo, setSendingTo] = useState(null); // Track pending user
 
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
@@ -36,12 +37,18 @@ const Homepage = () => {
     queryFn: getOutgoingFriendReqs,
   });
 
-  const { mutate: sendRequestMutation, isPending } = useMutation({
+  const { mutate: sendRequestMutation } = useMutation({
     mutationFn: sendFriendRequest,
+    onMutate: (userId) => {
+      setSendingTo(userId);
+    },
     onSuccess: (data, userId) => {
       setOutgoingRequestsIds((prev) => new Set(prev).add(userId));
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
-      queryClient.refetchQueries({ queryKey: ["outgoingFriendReqs"] });
+      setSendingTo(null);
+    },
+    onError: () => {
+      setSendingTo(null);
     },
   });
 
@@ -51,7 +58,6 @@ const Homepage = () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       queryClient.invalidateQueries({ queryKey: ["friends"] });
       queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
-      queryClient.refetchQueries({ queryKey: ["outgoingFriendReqs"] }); // Immediate refetch
     },
   });
 
@@ -124,6 +130,8 @@ const Homepage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendedUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
+                const isSending = sendingTo === user._id;
+
                 return (
                   <div
                     key={user._id}
@@ -163,12 +171,14 @@ const Homepage = () => {
 
                     <button
                       className={`btn w-full mt-2 ${
-                        hasRequestBeenSent ? "btn-disabled" : "btn-primary"
-                      } `}
+                        hasRequestBeenSent || isSending
+                          ? "btn-disabled"
+                          : "btn-primary"
+                      }`}
                       onClick={() => sendRequestMutation(user._id)}
-                      disabled={hasRequestBeenSent || isPending}
+                      disabled={hasRequestBeenSent || isSending}
                     >
-                      {hasRequestBeenSent ? (
+                      {hasRequestBeenSent || isSending ? (
                         <>
                           <CheckCircleIcon className="size-4 mr-2" />
                           Request Sent

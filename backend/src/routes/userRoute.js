@@ -8,6 +8,7 @@ import {
   getRecommendedUsers,
   rejectFriendRequest,
   sendFriendRequest,
+  unfriendUser,
   updateProfilePic,
 } from "../controllers/usercontroller.js";
 
@@ -23,5 +24,7 @@ router.post("/friend-request/:id/reject", protectRoute, rejectFriendRequest);
 router.get("/friend-requests", protectRoute, getFriendRequests);
 router.get("/outgoing-friend-requests", protectRoute, getOutgoingFriendReqs);
 router.put("/profilepic", protectRoute, updateProfilePic);
+
+  router.post("/friends/:id/unfriend", protectRoute, unfriendUser);
 
 export default router;

@@ -243,7 +243,9 @@ export async function updateProfilePic(req, res) {
   try {
     const { profilePic } = req.body;
     if (!profilePic) {
-      return res.status(400).json({ message: "Profile picture URL is required" });
+      return res
+        .status(400)
+        .json({ message: "Profile picture URL is required" });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -260,3 +262,23 @@ export async function updateProfilePic(req, res) {
     res.status(500).json({ message: "Error updating profile picture" });
   }
 }
+
+export const unfriendUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const friendId = req.params.id;
+
+    await User.findByIdAndUpdate(userId, {
+      $pull: { friends: friendId },
+    });
+
+    await User.findByIdAndUpdate(friendId, {
+      $pull: { friends: userId },
+    });
+
+    res.status(200).json({ message: "Unfriended successfully" });
+  } catch (error) {
+    console.error("Unfriend error:", error);
+    res.status(500).json({ message: "Server error during unfriending" });
+  }
+};

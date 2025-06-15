@@ -1,10 +1,25 @@
 import { LANGUAGE_TO_FLAG } from "../constants/index";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
+import { unfriendUserFn } from "../lib/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const FriendCard = ({ friend }) => {
   const isNexa = friend.fullname === "Nexa";
   const nexaBio = "Your friendly AI assistant!";
+  const queryClient = useQueryClient();
+
+  const { mutate: unfriendMutate, isLoading: isUnfriending } = useMutation({
+    mutationFn: () => unfriendUserFn(friend._id),
+    onSuccess: () => {
+      toast.success(`Unfriended ${friend.fullname}`);
+      queryClient.invalidateQueries(["myFriends"]);
+    },
+    onError: () => {
+      toast.error("Failed to unfriend. Please try again.");
+    },
+  });
 
   return (
     <div className="card bg-base-200 hover:shadow-md transition-shadow">
@@ -46,6 +61,16 @@ const FriendCard = ({ friend }) => {
         >
           Message
         </Link>
+
+        {!isNexa && (
+          <button
+            onClick={() => unfriendMutate()}
+            className="btn btn-error btn-sm w-full mt-2"
+            disabled={isUnfriending}
+          >
+            {isUnfriending ? "Unfriending..." : "Unfriend"}
+          </button>
+        )}
       </div>
     </div>
   );
