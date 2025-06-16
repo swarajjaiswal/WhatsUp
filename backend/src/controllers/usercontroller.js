@@ -43,32 +43,13 @@ export async function sendFriendRequest(req, res) {
     const currentUserId = req.user._id;
     const friendId = req.params.id;
 
-    if (currentUserId === friendId) {
-      return res
-        .status(400)
-        .json({ message: "You cannot send a friend request to yourself." });
-    }
+    console.log("Sending request from", currentUserId, "to", friendId);
 
-    const friend = await User.findById(friendId);
     const sender = await User.findById(currentUserId);
+    const recipient = await User.findById(friendId);
 
-    if (!friend) {
+    if (!recipient) {
       return res.status(404).json({ message: "User not found" });
-    }
-
-    if (friend.friends.includes(currentUserId)) {
-      return res.status(400).json({ message: "You are already friends" });
-    }
-
-    const existingRequest = await FriendRequest.findOne({
-      $or: [
-        { sender: currentUserId, recipient: friendId },
-        { sender: friendId, recipient: currentUserId },
-      ],
-    });
-
-    if (existingRequest) {
-      return res.status(400).json({ message: "Friend request already sent" });
     }
 
     const friendRequest = await FriendRequest.create({
@@ -76,7 +57,9 @@ export async function sendFriendRequest(req, res) {
       recipient: friendId,
     });
 
-    // Send email notification
+    console.log("Success:", friendRequest);
+
+    // Email Notification
     try {
       const friendRequestLink =
         process.env.NODE_ENV === "development"
@@ -85,22 +68,20 @@ export async function sendFriendRequest(req, res) {
 
       await transporter.sendMail({
         from: `"WhatsUp Friend Requests" <${process.env.NODE_MAILER_USER}>`,
-        to: friend.email,
+        to: recipient.email,
         subject: `${sender.fullname} wants to be your friend on WhatsUp!`,
         html: `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
     <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
       <img src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" alt="WhatsUp Logo" style="height: 50px;" />
-    <h1 style="color: #2e7d32;">WhatsUp</h1>
+      <h1 style="color: #2e7d32;">WhatsUp</h1>
       <h2 style="color: #333;">Friend Request from <span style="color: #2e7d32;">${
         sender.fullname
       }</span></h2>
     </div>
     <div style="padding: 20px; color: #333;">
-      <p>Hi <strong>${friend.fullname}</strong>,</p>
-      <p><strong>${
-        sender.fullname
-      }</strong> has sent you a friend request on <strong>WhatsUp</strong> 🎉</p>
+      <p>Hi <strong>${recipient.fullname}</strong>,</p>
+      <p><strong>${sender.fullname}</strong> has sent you a friend request on <strong>WhatsUp</strong> 🎉</p>
       <p>Click the button below to view and respond to the request:</p>
       <p style="text-align: center; margin: 30px 0;">
         <a href="${friendRequestLink}" style="
@@ -125,20 +106,22 @@ export async function sendFriendRequest(req, res) {
       </p>
     </div>
   </div>
-  `,
+        `,
       });
 
-      console.log(`Friend request email sent to ${friend.email}`);
-    } catch (emailError) {
-      console.error("Failed to send friend request email:", emailError);
+      console.log(`Friend request email sent to ${recipient.email}`);
+    } catch (emailErr) {
+      console.error("Email sending failed:", emailErr);
     }
 
     res.status(200).json({ message: "Friend request sent successfully" });
-  } catch (error) {
-    console.error("Error sending friend request:", error);
+  } catch (err) {
+    console.error("Friend request error:", err);
     res.status(500).json({ message: "Error sending friend request" });
   }
 }
+
+
 
 export async function acceptFriendRequest(req, res) {
   try {
@@ -243,9 +226,7 @@ export async function updateProfilePic(req, res) {
   try {
     const { profilePic } = req.body;
     if (!profilePic) {
-      return res
-        .status(400)
-        .json({ message: "Profile picture URL is required" });
+      return res.status(400).json({ message: "Profile picture URL is required" });
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -268,12 +249,14 @@ export const unfriendUser = async (req, res) => {
     const userId = req.user._id;
     const friendId = req.params.id;
 
+    // Remove friendId from current user's friends
     await User.findByIdAndUpdate(userId, {
-      $pull: { friends: friendId },
+      $pull: { friends: friendId }
     });
 
+    // Remove current user from friend's friends
     await User.findByIdAndUpdate(friendId, {
-      $pull: { friends: userId },
+      $pull: { friends: userId }
     });
 
     res.status(200).json({ message: "Unfriended successfully" });
