@@ -29,7 +29,6 @@ async function signupfn(req, res) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // ✅ Ensure Nexa (AI assistant) exists or create her
     let nexa = await User.findOne({ email: "nexa@ai.com" });
 
     if (!nexa) {
@@ -37,7 +36,7 @@ async function signupfn(req, res) {
       const newNexa = new User({
         fullname: "Nexa",
         email: "nexa@ai.com",
-        password: "nexa1234", // Will be hashed by pre-save hook
+        password: "nexa1234", 
         bio: "Your friendly AI assistant!",
         profilePic: nexaAvatar,
         isOnboarded: true,
@@ -45,7 +44,6 @@ async function signupfn(req, res) {
       nexa = await newNexa.save();
     }
 
-    // ✅ Create new user with Nexa in friends list
     const id = Math.floor(Math.random() * 100) + 1;
     const randomAvatar = `https://avatar.iran.liara.run/public/${id}.png`;
 
