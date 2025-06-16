@@ -29,14 +29,14 @@ async function signupfn(req, res) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    let nexa = await User.findOne({ email: "nexa@ai.com" });
+  let nexa = await User.findOne({ email: process.env.NEXA_EMAIL });
 
     if (!nexa) {
       const nexaAvatar = `https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://media.easy-peasy.ai/78e88f76-29bf-4289-9624-719aec0f7bcb/e516f677-4846-4a28-9707-ba00ffa49479.png`;
       const newNexa = new User({
         fullname: "Nexa",
-        email: "nexa@ai.com",
-        password: "nexa1234", 
+        email: process.env.NEXA_EMAIL,
+        password: process.env.NEXA_PASSWORD,
         bio: "Your friendly AI assistant!",
         profilePic: nexaAvatar,
         isOnboarded: true,
