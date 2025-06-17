@@ -21,7 +21,6 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 import ChatAi from "./pages/ChatAi.jsx";
 import PremiumPage from "./pages/PremiumPage.jsx";
-import { Check } from "lucide-react";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 
 const App = () => {

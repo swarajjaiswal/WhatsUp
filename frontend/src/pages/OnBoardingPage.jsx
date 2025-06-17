@@ -8,7 +8,6 @@ import {
   CameraIcon,
   LoaderIcon,
   MapPinIcon,
-  ShipWheelIcon,
   ShuffleIcon,
 } from "lucide-react";
 import { LoaderPinwheel } from "lucide-react";

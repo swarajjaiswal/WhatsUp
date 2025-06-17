@@ -9,7 +9,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false); // <-- new state for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false); 
   const queryClient = useQueryClient();
   const { theme } = useThemeStore();
 

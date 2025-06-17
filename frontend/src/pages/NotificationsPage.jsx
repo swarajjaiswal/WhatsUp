@@ -12,7 +12,7 @@ import {
   ArrowLeftIcon,
 } from "lucide-react";
 import NoNotificationsFound from "../components/NoNotificationsFound";
-import { useNavigate } from "react-router-dom"; // if you're using react-router
+import { useNavigate } from "react-router-dom"; 
 
 const NotificationsPage = () => {
   const queryClient = useQueryClient();

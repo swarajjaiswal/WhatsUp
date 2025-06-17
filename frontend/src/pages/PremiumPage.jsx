@@ -102,7 +102,6 @@ const PremiumPage = () => {
   ];
 
 const handleSelectPlan = (plan) => {
-  // Prevent navigation if it's already the current plan (Free)
   if (plan.name === "Free") return;
 
   const { icon, ...planData } = plan;

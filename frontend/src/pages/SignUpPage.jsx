@@ -10,7 +10,7 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false); // <-- new state for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false); 
   const { theme } = useThemeStore();
 
   const queryClient = useQueryClient();
