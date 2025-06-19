@@ -49,17 +49,25 @@ npm install
 
 # Create a .env file in the frontend/
 VITE_STREAM_API_KEY=your_stream_api_key
+VITE_RAZORPAY_KEY=your_razorpay_key
 
 cd ../backend
 npm install
 
 # Create a .env file in the backend/
+PORT=your_port
 MONGO_URI=your_mongodb_connection_uri
-JWT_SECRET=your_jwt_secret
+JWT_SECRET_KEY=your_jwt_secret
 STREAM_API_KEY=your_stream_api_key
-STREAM_SECRET=your_stream_api_secret
-EMAIL_USER=your_email@example.com
-EMAIL_PASS=your_email_password
+STREAM_API_SECRET=your_stream_api_secret
+NODE_MAILER_USER=your_email@example.com
+NODE_MAILER_PASS=your_email_password
+GEMINI_API_KEY=your_gemini_api_key
+RAZORPAY_ID=your_razorpay_id
+RAZORPAY_SECRET=your_razorpay_secret
+NEXA_EMAIL=your_ai_email_id
+NEXA_PASSWORD=your_ai_password
+
 
 # Start the backend server
 cd backend

@@ -47,7 +47,6 @@ const NotificationsPage = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto max-w-4xl space-y-8">
-        {/* Back button for < lg screens */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center text-sm text-gray-500 hover:text-primary font-medium mb-2 lg:hidden"

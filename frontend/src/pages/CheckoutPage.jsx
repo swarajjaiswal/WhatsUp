@@ -31,7 +31,7 @@ const CheckoutPage = () => {
 
   const baseAmount =
     billingCycle === "monthly" ? plan?.monthlyPrice : plan?.annualPrice;
-  const finalAmount = Math.round(baseAmount * 1.18 * 100); // paise
+  const finalAmount = Math.round(baseAmount * 1.18 * 100); 
 
   const createOrderMutation = useMutation({ mutationFn: createOrderMutationFn });
 
@@ -57,7 +57,7 @@ const CheckoutPage = () => {
     if (!form.firstName.trim()) errs.firstName = "First name is required";
     if (!form.lastName.trim()) errs.lastName = "Last name is required";
     if (!form.email.trim()) errs.email = "Email is required";
-    if (!form.phone.trim()) errs.phone = "Phone number is required";
+    if (!form.phone.trim()) errs.phone = "Phone number is required"; 
     return errs;
   };
 

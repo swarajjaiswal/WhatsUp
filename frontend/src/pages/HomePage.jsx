@@ -20,7 +20,7 @@ import NoFriendsFound from "../components/NoFriendsFound";
 const Homepage = () => {
   const queryClient = useQueryClient();
   const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
-  const [sendingTo, setSendingTo] = useState(null); // Track pending user
+  const [sendingTo, setSendingTo] = useState(null); 
 
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],

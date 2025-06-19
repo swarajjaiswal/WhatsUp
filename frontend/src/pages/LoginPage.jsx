@@ -62,7 +62,6 @@ const LoginPage = () => {
                   </p>
                 </div>
                 <div className="flex flex-col gap-3">
-                  {/* Email */}
                   <div className="form-control w-full space-y-2">
                     <label className="label">
                       <span className="label-text">Email</span>
@@ -78,8 +77,6 @@ const LoginPage = () => {
                       required
                     />
                   </div>
-
-                  {/* Password with toggle */}
                   <div className="form-control w-full space-y-2 relative">
                     <label className="label">
                       <span className="label-text">Password</span>
@@ -119,7 +116,6 @@ const LoginPage = () => {
                           />
                         </svg>
                       ) : (
-                        // eye icon
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5"

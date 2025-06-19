@@ -83,7 +83,6 @@ const ChatPage = () => {
     }
   };
 
-  // Avoid rendering if not ready
   if (loading || !chatClient || !channel) return <ChatLoader />;
 
   return (
