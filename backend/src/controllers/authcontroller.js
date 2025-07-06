@@ -13,10 +13,13 @@ async function signupfn(req, res) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters long" });
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&_])[A-Za-z\d@$!%*?#&_]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be at least 8 characters with uppercase, lowercase, digit, and special character.",
+      });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,7 +32,7 @@ async function signupfn(req, res) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-  let nexa = await User.findOne({ email: process.env.NEXA_EMAIL });
+    let nexa = await User.findOne({ email: process.env.NEXA_EMAIL });
 
     if (!nexa) {
       const nexaAvatar = `https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://media.easy-peasy.ai/78e88f76-29bf-4289-9624-719aec0f7bcb/e516f677-4846-4a28-9707-ba00ffa49479.png`;
@@ -254,12 +257,12 @@ async function forgotPasswordFn(req, res) {
   const resetToken = user.generateResetToken();
   await user.save({ validateBeforeSave: false });
 
-const resetPath = `/reset-password/${resetToken}`;
-const baseUrl = process.env.NODE_ENV === "production"
-  ? "https://whatsup-d95h.onrender.com"
-  : "http://localhost:5173"; 
-const resetUrl = `${baseUrl}${resetPath}`;
-
+  const resetPath = `/reset-password/${resetToken}`;
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://whatsup-d95h.onrender.com"
+      : "http://localhost:5173";
+  const resetUrl = `${baseUrl}${resetPath}`;
 
   const emailBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px;">
