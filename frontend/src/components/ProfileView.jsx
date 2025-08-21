@@ -45,10 +45,23 @@ const ProfileView = () => {
             className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-white/30 shadow-md mb-4 hover:scale-105 transition-transform duration-300"
           />
           <div className="flex items-center gap-2">
-            <button
+            {/* <button
               type="button"
               onClick={handleRandomAvatar}
               className="btn btn-accent"
+            >
+              <ShuffleIcon className="size-4 mr-2" />
+              Change Avatar
+            </button> */}
+            <button
+              type="button"
+              onClick={handleRandomAvatar}
+              disabled={window.location.pathname.startsWith("/call/")}
+              className={`btn btn-accent ${
+                window.location.pathname.startsWith("/call/")
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
             >
               <ShuffleIcon className="size-4 mr-2" />
               Change Avatar
